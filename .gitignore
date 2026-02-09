@@ -1,0 +1,13 @@
+# Backend secrets
+backend/.env
+backend/.env.*
+
+# Frontend env
+civiclens-ai/.env
+civiclens-ai/.env.local
+civiclens-ai/.env.*.local
+
+# Common
+node_modules/
+.next/
+__pycache__/
