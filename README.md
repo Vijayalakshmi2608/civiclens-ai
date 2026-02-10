@@ -1,168 +1,183 @@
-# ??? CivicLens AI
+# 🏛 CivicLens AI  
+### AI-Powered Public Services Accountability & Prediction Platform
 
-AI-Powered Public Services Accountability Dashboard
+CivicLens AI is a full-stack, AI-driven civic intelligence platform that transforms public complaints into **actionable insights, predictions, and accountability metrics** for governments, NGOs, and citizens.
 
-CivicLens AI is a full-stack, AI-driven dashboard that transforms public complaints and civic feedback into actionable insights. It helps governments, NGOs, and citizens track service failures, monitor response efficiency, and surface urgent issues in real time.
+Instead of scattered complaints and unread reports, CivicLens AI provides **clarity, transparency, and proactive governance**.
 
-Instead of scattered complaints and unread reports, CivicLens AI provides clarity, transparency, and accountability.
+---
 
-## ?? Problem Statement
+## 🌍 Problem Statement
 
-Citizens face major issues like:
-- No visibility into where complaints go
-- Delayed or ignored responses from departments
-- No data-driven prioritization of urgent issues
+Cities face major challenges:
 
-This leads to inefficiency, mistrust, and unresolved civic problems.
+• No visibility into where complaints go  
+• Delayed or ignored responses  
+• No data-driven prioritization  
+• No way to predict future civic risks  
 
-## ?? Solution
+This leads to inefficiency, mistrust, and unresolved public issues.
 
-CivicLens AI:
-- Ingests civic complaints (forms, social posts, reports)
-- Uses AI to:
-- Classify categories
-- Summarize issues
-- Assign urgency scores
-- Displays everything in a live dashboard with:
-- City heatmaps
-- Department leaderboards
-- Urgency alerts
-- Trend analytics
+---
 
-## ?? Key Features
+## 💡 Solution
 
-- ?? Interactive Dashboard (Next.js + Tailwind)
-- ?? AI Complaint Analysis (NLP classification + summaries)
-- ??? City Heatmap View
-- ?? Department Performance Leaderboard
-- ?? High-Urgency Alert System
-- ?? API-driven backend (FastAPI)
+CivicLens AI ingests civic complaints and uses **AI + data intelligence** to:
 
-## ?? Tech Stack
+✔ Classify & summarize issues  
+✔ Detect root causes  
+✔ Predict future risk zones  
+✔ Coach departments with AI feedback  
+✔ Score trust & transparency  
 
-Layer | Tech Used
---- | ---
-Frontend | Next.js, Tailwind CSS
-Backend | FastAPI (Python)
-AI / NLP | OpenAI / HuggingFace
-Database | SQLite (MVP)
-Maps | Leaflet + OpenStreetMap
-Deployment | Vercel + Render / Railway
+All results are displayed in a **real-time interactive dashboard**.
 
-## ??? Project Structure
+---
 
-```
+## 🚀 Core Features
+
+### 1️⃣ AI Root Cause Detection Engine  
+Clusters complaints and explains *why* problems keep happening.
+
+### 2️⃣ Predictive Civic Risk Zones  
+Forecasts where future issues will occur using ML + weather + census data.
+
+### 3️⃣ AI Department Coaching Reports  
+Each department gets AI-generated performance insights and fixes.
+
+### 4️⃣ Multilingual Voice-to-Complaint Intake  
+Citizens speak in any language → AI transcribes, translates, analyzes.
+
+### 5️⃣ Civic Trust & Transparency Score  
+Public accountability score (0–100) for each department.
+
+---
+
+## 🧠 Tech Stack
+
+| Layer        | Tech Used                                  |
+|-------------|---------------------------------------------|
+| Frontend     | Next.js, Tailwind CSS, shadcn/ui, Recharts   |
+| Backend      | FastAPI (Python)                            |
+| AI / NLP     | HuggingFace, Whisper, LLM APIs              |
+| ML Models    | Sentence Transformers, XGBoost              |
+| Database     | SQLite (MVP)                                |
+| Maps         | Leaflet + OpenStreetMap                     |
+| Data APIs    | NYC 311, SF 311, Census, NOAA Weather        |
+| Deployment   | Vercel + Render / Railway                   |
+
+---
+
+## 📁 Project Structure
+
 CivicLens/
-??? backend/
-?   ??? app/
-?   ?   ??? __init__.py
-?   ?   ??? main.py
-?   ?   ??? db.py
-?   ?   ??? geocode_service.py
-?   ?   ??? ingest_service.py
-?   ?   ??? worker.py
-?   ??? requirements.txt
-?   ??? .env
-??? frontend/
-?   ??? src/
-?   ?   ??? app/
-?   ?       ??? page.tsx
-?   ?       ??? dashboard/
-?   ?           ??? page.tsx
-?   ?           ??? map/page.tsx
-?   ?           ??? admin/page.tsx
-?   ??? package.json
-?   ??? tsconfig.json
-??? README.md
-```
+├── backend/
+│ ├── app/
+│ │ ├── main.py
+│ │ ├── db.py
+│ │ ├── ingest_service.py
+│ │ ├── geocode_service.py
+│ │ ├── root_cause_service.py
+│ │ ├── risk_zone_model.py
+│ │ ├── coaching_service.py
+│ │ ├── voice_ingest.py
+│ │ ├── trust_score_service.py
+│ ├── requirements.txt
+│ ├── .env
+├── frontend/
+│ ├── src/app/
+│ │ ├── page.tsx
+│ │ ├── dashboard/
+│ │ │ ├── page.tsx
+│ │ │ ├── map/page.tsx
+│ │ │ ├── admin/page.tsx
+│ │ │ ├── risk/page.tsx
+│ │ │ ├── coaching/page.tsx
+│ │ │ ├── trust/page.tsx
+│ │ │ ├── voice/page.tsx
+│ ├── package.json
+│ ├── tsconfig.json
+├── README.md
 
-## ?? Setup Instructions
 
-### 1?? Clone Repo
+---
 
-```
+## ⚙ Setup Instructions
+
+### 1️⃣ Clone Repo
+
+```bash
 git clone https://github.com/yourusername/civiclens-ai.git
 cd civiclens-ai
-```
-
-### 2?? Backend Setup (FastAPI)
-
-```
+2️⃣ Backend Setup
 cd backend
 python -m venv venv
-venv\Scriptsctivate
+source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
-```
+Create .env:
 
-Create `.env` file:
-
-```
-HF_TOKEN=your_hugging_face_token_here
+HF_TOKEN=your_huggingface_token
 HF_MODEL=deepseek-ai/DeepSeek-V3-0324
-NOMINATIM_USER_AGENT=civiclens-ai/0.1 (contact: you@example.com)
-```
 
-Run server:
+NOAA_TOKEN=your_noaa_token
+NOAA_CITY_IDS={"New York City":"CITY:US360019","San Francisco":"CITY:US060073"}
 
-```
+CENSUS_API_KEY=your_census_key_optional
+CENSUS_YEAR=2022
+Run backend:
+
 uvicorn app.main:app --reload
-```
+Backend runs at:
+➡ http://localhost:8000
 
-API runs at:
-- http://localhost:8000
-
-### 3?? Frontend Setup (Next.js)
-
-```
-cd ..rontend
+3️⃣ Frontend Setup
+cd frontend
 npm install
 npm run dev
-```
-
 Frontend runs at:
-- http://localhost:3000
+➡ http://localhost:3000
 
-## ?? API Endpoints
+🔗 API Endpoints
+Method	Endpoint	Description
+POST	/api/ingest	Ingest complaint
+POST	/api/analyze	Analyze text with AI
+POST	/api/root-cause	Root cause clustering
+GET	/api/predict-risk-zones	Predict future risk zones
+GET	/api/department-coaching	AI coaching reports
+POST	/api/voice-ingest	Voice → Text → Analysis
+GET	/api/trust-scores	Trust & transparency scores
+🎯 Demo Flow
+User submits text or voice complaint
 
-Method | Endpoint | Description
---- | --- | ---
-GET | `/api/complaints` | Fetch all complaints
-POST | `/api/analyze` | Analyze complaint text with AI
-POST | `/api/ingest` | Ingest new complaint
-GET | `/api/city-stats` | City stats for map view
-GET | `/api/admin-analytics` | Admin analytics + alerts
+AI classifies + scores urgency
 
-## ?? Demo Flow
+Root cause engine clusters issues
 
-1. User submits a civic issue
-2. AI classifies & scores urgency
-3. Data appears in dashboard
-4. Heatmap + alerts update
-5. Admin views trends & leaderboards
+ML predicts future risk zones
 
-## ?? Impact
+Departments get AI coaching
 
-CivicLens AI helps:
-- ? Governments improve response efficiency
-- ? NGOs detect systemic failures
-- ? Citizens gain visibility & trust
+Trust scores update in real-time
 
-This platform turns data into civic action.
+🌟 Impact
+✔ Governments act proactively
+✔ NGOs detect systemic failures
+✔ Citizens gain visibility & trust
 
-## ?? Future Scope
+CivicLens AI turns civic data into civic action.
 
-- Real-time social media ingestion
-- Mobile app version
-- Multilingual AI support
-- Integration with official grievance portals
-- Predictive analytics for civic risk zones
+🔮 Future Scope
+• Real-time social media ingestion
+• Mobile app version
+• Multilingual AI expansion
+• Policy simulation engine
+• National-scale deployment
 
-## ?? Team
+👩‍💻 Team
+Vijayalakshmi
+Role: Full-Stack + AI Developer
+Focus: Architecture, Backend, ML, Frontend, UX
 
-- Vijayalakshmi ? Full Stack + AI Developer
-- Role: Architecture, Backend, AI, Frontend, UX
-
-## ?? Hackathon Info
-
-Built for: DevDash 2026 ? The Sprint to Solution
-Track: AI + Social Good / Developer Tools
+🏆 Hackathon
+Built for: DevDash 2026 – AI + Social Good Track
+Theme: Civic Intelligence, Transparency, Accountability
