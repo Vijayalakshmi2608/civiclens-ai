@@ -2,8 +2,13 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fb;
+  --foreground: #0f172a;
+  --glass: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(148, 163, 184, 0.35);
+  --accent: #22d3ee;
+  --accent-2: #8b5cf6;
+  --accent-3: #22c55e;
 }
 
 @theme inline {
@@ -24,4 +29,46 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px);
+}
+
+.card-3d {
+  transform: translateZ(0);
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+
+.card-3d:hover {
+  transform: translateY(-6px) rotateX(2deg);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
+}
+
+.ambient-bg {
+  background:
+    radial-gradient(600px circle at 10% 10%, rgba(34, 211, 238, 0.25), transparent 40%),
+    radial-gradient(700px circle at 80% 20%, rgba(139, 92, 246, 0.18), transparent 45%),
+    radial-gradient(800px circle at 40% 80%, rgba(34, 197, 94, 0.18), transparent 45%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+}
+
+.float-in {
+  animation: float-in 600ms ease both;
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

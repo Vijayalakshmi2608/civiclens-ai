@@ -11,3 +11,7 @@ civiclens-ai/.env.*.local
 node_modules/
 .next/
 __pycache__/
+
+# Python venv + local DB
+backend/venv/
+backend/app/civiclens.db

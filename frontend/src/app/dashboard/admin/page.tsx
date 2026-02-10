@@ -19,10 +19,33 @@ type AdminAnalyticsResponse = {
   alerts: AlertsPayload;
 };
 
+type CityReportResponse = {
+  key_issues: string[];
+  root_causes: string[];
+  recommended_actions: string[];
+};
+
+type DepartmentCoachingReport = {
+  strengths: string[];
+  weaknesses: string[];
+  priority_fixes: string[];
+  process_improvements: string[];
+};
+
+type DepartmentCoachingResponse = {
+  department_name: string;
+  coaching_report: DepartmentCoachingReport;
+};
+
 export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AdminAnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [city, setCity] = useState("New York City");
+  const [report, setReport] = useState<CityReportResponse | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [deptCoaching, setDeptCoaching] = useState<DepartmentCoachingResponse[]>([]);
+  const [deptLoading, setDeptLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -37,8 +60,55 @@ export default function AdminAnalyticsPage() {
         setLoading(false);
       }
     }
+    async function loadCoaching() {
+      try {
+        const res = await fetch("http://localhost:8000/api/department-coaching");
+        if (!res.ok) throw new Error("Failed to load coaching reports");
+        const payload = await res.json();
+        setDeptCoaching(payload);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setDeptLoading(false);
+      }
+    }
     load();
+    loadCoaching();
   }, []);
+
+  async function handleGenerateReport(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setReport(null);
+    setReportLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/api/ai/city-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ city }),
+      });
+      if (!res.ok) throw new Error("Failed to generate report");
+      const payload = await res.json();
+      setReport(payload);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setReportLoading(false);
+    }
+  }
+
+  async function handleLoadCoaching() {
+    setDeptLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/api/department-coaching");
+      if (!res.ok) throw new Error("Failed to load coaching reports");
+      const payload = await res.json();
+      setDeptCoaching(payload);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setDeptLoading(false);
+    }
+  }
 
   const departments = useMemo(() => {
     return data?.departments
@@ -49,10 +119,10 @@ export default function AdminAnalyticsPage() {
   }, [data]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 text-slate-900">
+    <div className="min-h-screen text-slate-900">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+          <div className="float-in">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-700">
               CivicLens AI
             </p>
@@ -95,7 +165,7 @@ export default function AdminAnalyticsPage() {
               </div>
             </section>
 
-            <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section className="mt-8 rounded-3xl glass p-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Department Leaderboard</h2>
                 <span className="text-xs text-slate-500">
@@ -130,6 +200,142 @@ export default function AdminAnalyticsPage() {
                 </table>
                 {departments.length === 0 && (
                   <p className="mt-4 text-sm text-slate-500">No data yet.</p>
+                )}
+              </div>
+            </section>
+
+            <section className="mt-8 rounded-3xl glass p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">AI Executive Summary</h2>
+                <span className="text-xs text-slate-500">City-level report</span>
+              </div>
+
+              <form onSubmit={handleGenerateReport} className="mt-4 flex flex-wrap gap-3">
+                <input
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="City name"
+                  className="flex-1 rounded-xl border border-white/60 bg-white/80 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-200"
+                />
+                <button
+                  type="submit"
+                  disabled={reportLoading}
+                  className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                >
+                  {reportLoading ? "Generating…" : "Generate Report"}
+                </button>
+              </form>
+
+              {report && (
+                <div className="mt-5 grid gap-4 md:grid-cols-3">
+                  <div className="rounded-2xl border border-white/60 bg-white/80 p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-500">
+                      Key Issues
+                    </p>
+                    <ul className="mt-2 space-y-2 text-sm text-slate-700">
+                      {report.key_issues.map((item, idx) => (
+                        <li key={`issue-${idx}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-white/60 bg-white/80 p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-500">
+                      Root Causes
+                    </p>
+                    <ul className="mt-2 space-y-2 text-sm text-slate-700">
+                      {report.root_causes.map((item, idx) => (
+                        <li key={`cause-${idx}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-white/60 bg-white/80 p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-500">
+                      Recommended Actions
+                    </p>
+                    <ul className="mt-2 space-y-2 text-sm text-slate-700">
+                      {report.recommended_actions.map((item, idx) => (
+                        <li key={`action-${idx}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <section className="mt-8 rounded-3xl glass p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Department Coaching</h2>
+                <button
+                  onClick={handleLoadCoaching}
+                  className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                  disabled={deptLoading}
+                >
+                  {deptLoading ? "Loading…" : "Generate Coaching"}
+                </button>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                AI-generated strengths, weaknesses, and action plans per department.
+              </p>
+
+              <div className="mt-4 space-y-4">
+                {deptCoaching.map((item) => (
+                  <div
+                    key={item.department_name}
+                    className="rounded-2xl border border-white/60 bg-white/80 p-4"
+                  >
+                    <div className="text-sm font-semibold text-slate-800">
+                      {item.department_name}
+                    </div>
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      <div className="text-sm">
+                        <p className="text-xs font-semibold uppercase text-slate-500">
+                          Strengths
+                        </p>
+                        <ul className="mt-2 space-y-2 text-slate-700">
+                          {item.coaching_report.strengths.map((val, idx) => (
+                            <li key={`s-${idx}`}>{val}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="text-sm">
+                        <p className="text-xs font-semibold uppercase text-slate-500">
+                          Weaknesses
+                        </p>
+                        <ul className="mt-2 space-y-2 text-slate-700">
+                          {item.coaching_report.weaknesses.map((val, idx) => (
+                            <li key={`w-${idx}`}>{val}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="text-sm">
+                        <p className="text-xs font-semibold uppercase text-slate-500">
+                          Priority Fixes
+                        </p>
+                        <ul className="mt-2 space-y-2 text-slate-700">
+                          {item.coaching_report.priority_fixes.map((val, idx) => (
+                            <li key={`p-${idx}`}>{val}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="text-sm">
+                        <p className="text-xs font-semibold uppercase text-slate-500">
+                          Process Improvements
+                        </p>
+                        <ul className="mt-2 space-y-2 text-slate-700">
+                          {item.coaching_report.process_improvements.map(
+                            (val, idx) => (
+                              <li key={`i-${idx}`}>{val}</li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {!deptLoading && deptCoaching.length === 0 && (
+                  <p className="text-sm text-slate-500">
+                    Click “Generate Coaching” to load department reports.
+                  </p>
                 )}
               </div>
             </section>

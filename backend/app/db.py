@@ -22,9 +22,24 @@ class IngestedComplaint(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     source: Mapped[str] = mapped_column(String(32), index=True)
+    city: Mapped[str] = mapped_column(String(128), index=True, default="Unknown")
     text: Mapped[str] = mapped_column(String(2000))
     category: Mapped[str] = mapped_column(String(32), index=True)
     summary: Mapped[str] = mapped_column(String(240))
+    urgency_score: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class VoiceIngest(Base):
+    __tablename__ = "voice_ingest"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    source: Mapped[str] = mapped_column(String(32), default="voice")
+    language: Mapped[str] = mapped_column(String(16), default="unknown")
+    city: Mapped[str] = mapped_column(String(128), index=True, default="Unknown")
+    original_text: Mapped[str] = mapped_column(String(4000))
+    translated_text: Mapped[str] = mapped_column(String(4000))
+    category: Mapped[str] = mapped_column(String(32), index=True)
     urgency_score: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 

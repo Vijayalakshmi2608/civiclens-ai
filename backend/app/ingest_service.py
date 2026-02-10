@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
+from .analysis import AnalyzeRequest, analyze_complaint
 from .db import IngestedComplaint, SessionLocal
-from .main import AnalyzeRequest, analyze_complaint
 
 
 @dataclass
@@ -12,12 +12,13 @@ class IngestResult:
     urgency_score: int
 
 
-def ingest_post(source: str, text: str) -> IngestResult:
+def ingest_post(source: str, text: str, city: str | None = None) -> IngestResult:
     analysis = analyze_complaint(AnalyzeRequest(text=text))
 
     with SessionLocal() as session:
         record = IngestedComplaint(
             source=source,
+            city=city or "Unknown",
             text=text,
             category=analysis.category,
             summary=analysis.summary,
