@@ -23,11 +23,44 @@ CITY_STATE = {
 _CACHE: Dict[str, Dict] = {}
 
 CITY_ALIASES = {
+    "MANHATTAN": "New York City",
+    "BROOKLYN": "New York City",
+    "QUEENS": "New York City",
+    "BRONX": "New York City",
+    "STATEN ISLAND": "New York City",
+    "UNSPECIFIED": "New York City",
     "Manhattan": "New York City",
     "Brooklyn": "New York City",
     "Queens": "New York City",
     "Bronx": "New York City",
     "Staten Island": "New York City",
+}
+
+STATIC_CENSUS: Dict[str, Dict[str, float]] = {
+    "New York City": {
+        "population": 8336817.0,
+        "median_income": 76000.0,
+        "housing_units": 3600000.0,
+        "housing_density": 0.4318,
+    },
+    "San Francisco": {
+        "population": 808437.0,
+        "median_income": 136689.0,
+        "housing_units": 407000.0,
+        "housing_density": 0.5035,
+    },
+    "Chicago": {
+        "population": 2693976.0,
+        "median_income": 74279.0,
+        "housing_units": 1250000.0,
+        "housing_density": 0.4639,
+    },
+    "Boston": {
+        "population": 675647.0,
+        "median_income": 96331.0,
+        "housing_units": 307000.0,
+        "housing_density": 0.4544,
+    },
 }
 
 
@@ -45,7 +78,8 @@ def _fetch_state_places(state_fips: str, year: str) -> list[list[str]]:
 
 
 def get_city_census(city: str) -> Optional[Dict[str, float]]:
-    city = CITY_ALIASES.get(city, city)
+    city = (city or "").strip()
+    city = CITY_ALIASES.get(city, CITY_ALIASES.get(city.upper(), city))
     year = os.getenv("CENSUS_YEAR", "2022")
     cache_key = f"{city}:{year}"
     if cache_key in _CACHE:
@@ -61,6 +95,10 @@ def get_city_census(city: str) -> Optional[Dict[str, float]]:
     try:
         rows = _fetch_state_places(state_fips, year)
     except Exception:
+        static = STATIC_CENSUS.get(city)
+        if static:
+            _CACHE[cache_key] = static
+            return static
         return None
 
     if not rows or len(rows) < 2:
@@ -80,6 +118,10 @@ def get_city_census(city: str) -> Optional[Dict[str, float]]:
             break
 
     if not target:
+        static = STATIC_CENSUS.get(city)
+        if static:
+            _CACHE[cache_key] = static
+            return static
         return None
 
     population = float(target[pop_idx]) if target[pop_idx] else 0.0

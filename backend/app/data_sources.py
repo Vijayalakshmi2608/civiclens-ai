@@ -51,7 +51,16 @@ def _normalize_nyc(item: Dict[str, Any]) -> Dict[str, Any]:
         or item.get("complaint_type")
         or "No details provided."
     )
-    city = item.get("borough") or "New York City"
+    borough_raw = (item.get("borough") or "").strip()
+    borough_map = {
+        "MANHATTAN": "Manhattan",
+        "BROOKLYN": "Brooklyn",
+        "QUEENS": "Queens",
+        "BRONX": "Bronx",
+        "STATEN ISLAND": "Staten Island",
+        "UNSPECIFIED": "New York City",
+    }
+    city = borough_map.get(borough_raw.upper(), borough_raw.title() if borough_raw else "New York City")
     return {
         "category": item.get("complaint_type") or "General",
         "department": item.get("agency") or "NYC 311",
