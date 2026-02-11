@@ -22,6 +22,14 @@ CITY_STATE = {
 
 _CACHE: Dict[str, Dict] = {}
 
+CITY_ALIASES = {
+    "Manhattan": "New York City",
+    "Brooklyn": "New York City",
+    "Queens": "New York City",
+    "Bronx": "New York City",
+    "Staten Island": "New York City",
+}
+
 
 def _fetch_state_places(state_fips: str, year: str) -> list[list[str]]:
     url = f"{CENSUS_BASE}/{year}/acs/acs5"
@@ -37,6 +45,7 @@ def _fetch_state_places(state_fips: str, year: str) -> list[list[str]]:
 
 
 def get_city_census(city: str) -> Optional[Dict[str, float]]:
+    city = CITY_ALIASES.get(city, city)
     year = os.getenv("CENSUS_YEAR", "2022")
     cache_key = f"{city}:{year}"
     if cache_key in _CACHE:
@@ -88,3 +97,4 @@ def get_city_census(city: str) -> Optional[Dict[str, float]]:
     # small TTL-like behavior
     _CACHE[cache_key]["_ts"] = time.time()
     return data
+
