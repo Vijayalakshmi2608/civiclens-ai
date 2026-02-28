@@ -197,12 +197,9 @@ Focus: Architecture, Backend, ML, Frontend, UX
 
 ---
 
-## 🏆 Hackathon
 
-**Built for:** DevDash 2026 – AI + Social Good Track  
-**Theme:** Civic Intelligence, Transparency, Accountability
 
----
+
 
 ## 📄 License
 
